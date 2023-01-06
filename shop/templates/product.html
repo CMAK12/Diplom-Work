@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block title %}
+        Product
+{% endblock %}
+
+{% block content %}
+    <div class="container py-5">
+        <div class="row mt-5">
+            <div class="col-10 mx-auto col-md-6 my-3">
+                <img src="{{ product.image.url }}">
+            </div>
+        </div>
+    </div>
+    <div class="col-10 mx-auto col-md-6 my-3">
+        <div>
+            <h1 class="product_title">{{ product.name }}</h1>
+            <h5 class="text-info font-italic mb-3">₴{{ product.price }}</h5>
+            <p class="product_desc">Product Description</p>
+            <p class="text-justify product_text">
+                {{ product.description }} 
+            </p>
+            {% if product.stock <= 0 %}
+            <p class="text-justify product_text">Out of Stock</p>
+            {% else %}
+            <a href="">Add To Cart</a>
+            {% endif %}
+        </div>
+    </div>
+    <br>
+<div class="container">
+    <div class="row">
+    {% for product in products %}
+        <div class="col-9 mx-auto col-md-6 col-lg-3">
+            <div class="card mb-5 mx-auto">
+                <div class="p-4">
+                    <a href="{{ product.get_url }}">
+                        <img class="card-img-top" src="{{ product.image.url }}" alt="{{ product.name }}" style="width: 256px; height: 318px;">
+                    </a>
+                </div>			
+                <div class="card-footer d-flex justify-content-between" style="background: transparent; border-color: transparent;">
+                    <p class="font-weight-bold mb-0">{{ product.name }}</p>
+                    <h5 class="text-info font-italic mb-0">₴{{ product.price }}</h5>
+                </div>
+            </div>
+        </div>
+	{% endfor %}
+{% endblock %}

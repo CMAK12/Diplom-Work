@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="ru">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>JavaScript SimpleAdaptiveSlider - Слайдер для сайта на чистом JavaScript [Example 07]</title>
+  <!-- Подключаем CSS слайдера -->
+  <link rel="stylesheet" href="/examples/libs/simple-adaptive-slider/simple-adaptive-slider.min.css">
+  <!-- Подключаем JS слайдера -->
+  <script defer src="/examples/libs/simple-adaptive-slider/simple-adaptive-slider.min.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      // инициализация слайдера
+      var slider = new SimpleAdaptiveSlider('.slider', {
+        autoplay: true,
+        interval: 10000,
+      });
+    });
+  </script>
+  <style>
+    /* стили для элемента body */
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial,
+        sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+    }
+
+    .slider {
+      max-width: 800px;
+    }
+
+    /* дополнительные стили для этого примера */
+    .slider__items {
+      counter-reset: slide;
+    }
+
+    .slider__item {
+      height: 320px;
+      overflow: hidden;
+      position: relative;
+      counter-increment: slide;
+    }
+
+    .slider__item::after {
+      content: counter(slide);
+      position: absolute;
+      top: 10px;
+      right: 20px;
+      color: #fff;
+      font-style: italic;
+      font-size: 32px;
+      font-weight: bold;
+    }
+
+    img {
+      display: inline-block;
+      height: auto;
+      max-width: 100%;
+    }
+
+    .slider__item:nth-child(1) {
+      background: linear-gradient(45deg, #085078 10%, #85d8ce 90%);
+    }
+
+    .slider__item:nth-child(2) {
+      background: linear-gradient(to right, #dd1818, #333333);
+    }
+
+    .slider__item:nth-child(3) {
+      background: linear-gradient(to right, #093028, #237a57);
+    }
+
+    .slider__item:nth-child(4) {
+      background: linear-gradient(to right, #243B55, #141E30);
+    }
+
+    .slider__item {
+      height: 320px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .slider__item_inner {
+      position: absolute;
+      left: 8%;
+      right: 8%;
+      top: 36px;
+      bottom: 36px;
+      overflow: hidden;
+      color: #fff;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+    }
+
+    .slider__item_img {
+      flex: 0 0 100px;
+      max-width: 100px;
+
+    }
+
+    .slider__item_testimonial {
+      flex: 1 0 0;
+      display: flex;
+      flex-direction: column;
+      text-align: center;
+    }
+
+    .slider__item_name {
+      font-size: 20px;
+      margin-bottom: 8px;
+      color: rgba(255, 255, 255, 0.8);
+    }
+
+    .slider__item_post {
+      font-size: 14px;
+      margin-bottom: 8px;
+      color: rgba(255, 255, 255, 0.8);
+      display: none;
+    }
+
+    .slider__item_text {
+      font-size: 16px;
+      color: rgba(255, 255, 255, 0.5);
+      margin-bottom: 12px;
+      display: none;
+    }
+
+    @media (min-width: 576px) {
+      .slider__item {
+        height: 310px;
+      }
+
+      .slider__item_inner {
+        flex-direction: row;
+      }
+
+      .slider__item_testimonial {
+        margin-left: 15px;
+      }
+
+      .slider__item_img {
+        flex: 0 0 150px;
+        max-width: 150px;
+        height: 200px;
+      }
+
+      .slider__item_testimonial {
+        text-align: left;
+      }
+
+      .slider__item_post,
+      .slider__item_text {
+        display: block;
+      }
+    }
+
+    .btn {
+      display: block;
+      font-weight: 400;
+      text-align: center;
+      white-space: nowrap;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+      border: 1px solid transparent;
+      padding: .375rem .75rem;
+      font-size: 1rem;
+      line-height: 1.5;
+      transition: color .15s ease-in-out, background-color .15s ease-in-out, border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+      color: #fff;
+      background-color: rgba(255, 255, 255, 0.2);
+      text-decoration: none;
+    }
+
+    .btn:hover {
+      color: #fff;
+      background-color: rgba(255, 255, 255, .5);
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Разметка слайдера -->
+  {% for product in products %}
+  <div class="slider">
+    <div class="slider__wrapper">
+      <div class="slider__items">
+        <div class="slider__item">
+          <span class="slider__item_inner">
+            <span class="slider__item_img">
+              <img class="slider__item_photo" src="{{ product.image.url }}" alt="{{ product.name }}">
+            </span>
+            <span class="slider__item_testimonial">
+              <span class="slider__item_name">{{ product.name }}</span>
+              <span class="slider__item_post">{{ product.category }}</span>
+              <span class="slider__item_text">
+                {{ product.description }}
+              </span>
+              <span class="slider__item_action">
+                <a class="btn" href="#">Купити за {{ product.price }}₴</a>
+              </span>
+            </span>
+          </span>
+        </div>
+    {% endfor %}
+</body>
+</html>

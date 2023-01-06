@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}
+    Home
+{% endblock %}
+{% block content %}
+<div class="py-4">
+    <div class="container">
+        <div class="row">
+            <div class="col-10 mx-auto my-2 text-center">
+                <h1 class="text-capitalize font-weight-bold"><b>Our Product</b></h1>
+            </div>
+        </div>
+    </div>
+<div class="container">
+    <div class="row">
+        {% for product in products %}
+            <div class="product-wrap">
+                <div class="product-item">
+                <img src="{{ product.image.url }}" alt="{{ product.name }}" style="height: 382px;">
+                <div class="product-buttons">
+                    <a href="{{ product.get_url }}" class="button">В корзину</a>
+                </div>
+                </div>
+                <div class="product-title">
+                <a href="{{ product.get_url }}">{{ product.name }}</a>
+                <span class="product-price">₴{{ product.price }}</span>
+                </div>
+            </div>
+
+		{% endfor %}
+		</div>
+	</div>
+
+{% endblock %}
