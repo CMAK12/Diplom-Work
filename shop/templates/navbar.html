@@ -18,5 +18,9 @@
               </div>
           <li class="nav-item"><a class="nav-link text-light text-uppercase font-weight-bold px-3" href="">Contacts</a></li>
           <li class="nav-item"><a class="nav-link text-light text-uppercase font-weight-bold px-3" href="">About</a></li>
+          <form class="d-flex position-absolute top-1 end-0" action="{% url 'search' %}">
+            <input class="form-control me-2" type="search" name="q" placeholder="Search" aria-label="Search">
+            <button class="btn btn-outline-success" type="submit">Search</button>
+          </form>
     </div>
 </nav>

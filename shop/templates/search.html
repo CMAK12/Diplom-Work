@@ -1,34 +1,32 @@
 {% extends 'base.html' %}
 
-{% load static %}
-
 {% block title %}
-    Home
+Home
 {% endblock %}
+
 {% block content %}
 <div class="py-4">
     <div class="container">
         <div class="row">
             <div class="col-10 mx-auto my-2 text-center">
-                <h1 class="text-capitalize font-weight-bold"><b>Our Product</b></h1>
+                <h1 class="text-capitalize font-weight-bold"><b>Finds:</b></h1>
             </div>
         </div>
     </div>
 <div class="container">
     <div class="row">
-        {% for product in products %}
+        {% for search in searches %}
         <div class="product-item">
-            <a href="{{ product.get_url }}"><img src="{{ product.image.url }}" style="height: 351px;"></a>
+            <a href="{{ search.get_url }}"><img src="{{ search.image.url }}" style="height: 351px;"></a>
             <div class="product-list">
-              <h3>{{ product.name_limit }}</h3>
-                <span class="price">₴{{ product.price }}</span>
+                <h3>{{ search.name_limit }}</h3>
+                <span class="price">₴{{ search.price }}</span>
                 <a href="" class="button">В корзину</a>
             </div>
-          </div>
-          <br>
-          <br>
-		{% endfor %}
-		</div>
-	</div>
-
+            </div>
+            <br>
+            <br>
+        {% endfor %}
+        </div>
+    </div>
 {% endblock %}
