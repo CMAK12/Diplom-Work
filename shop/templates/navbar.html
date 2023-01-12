@@ -9,15 +9,31 @@
     <div id="navbar" class="collapse navbar-collapse justify-content-between">
       <ul class="navbar-nav">
           <li class="nav-item dropdown">
-              <a class="nav-link text-light dropdown-toggle text-uppercase px-3" href="" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Categories</a>
+              <a class="nav-link text-light dropdown-toggle text-uppercase px-3" href="" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Категорії</a>
               <div class="dropdown-menu">
                 <a class="dropdown-item" href="{% url 'home' %}">All Products</a>
               {% for category in links %}
               <a class="dropdown-item" href="{{ category.get_url }}">{{ category.name }}</a>
                 {% endfor %}
               </div>
-          <li class="nav-item"><a class="nav-link text-light text-uppercase font-weight-bold px-3" href="">Contacts</a></li>
-          <li class="nav-item"><a class="nav-link text-light text-uppercase font-weight-bold px-3" href="">About</a></li>
+        <li class="nav-item dropdown">
+            <a class="nav-link text-light dropdown-toggle text-uppercase px-3" href="" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Сортування</a>
+            <div class="dropdown-menu">
+              <a class="dropdown-item" name="cheap" href="">Від дорогих до дешевих</a>
+              <a class="dropdown-item" name="expensive" href="">Від дешевих до дорогих</a>
+            </li>
+          <li style="margin-top: 7px;">
+            <form action="{% url 'home' %}">
+              <select name="sort">
+                <option value="cheap">Від дешевих до дорогих</option>
+                <option value="expensive" selected>Від дорогих до дешевих</option>
+                <input type="submit" value="Sort" style="height: 29px;">
+              </select>
+            </form>
+          </li>
+            </div>
+          </ul>
+
           <form class="d-flex position-absolute top-1 end-0" action="{% url 'search' %}">
             <input class="form-control me-2" type="search" name="q" placeholder="Search" aria-label="Search">
             <button class="btn btn-outline-success" type="submit">Search</button>

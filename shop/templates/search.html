@@ -9,7 +9,15 @@ Home
     <div class="container">
         <div class="row">
             <div class="col-10 mx-auto my-2 text-center">
-                <h1 class="text-capitalize font-weight-bold"><b>Finds:</b></h1>
+                {% if quantity >= 2 and quantity <= 4 %}
+                    <h1 class="font-weight-bold"><b>Знайдено: {{ quantity }} товара</b></h1>
+                {% elif quantity == 1 %}
+                    <h1 class="font-weight-bold"><b>Знайдено: {{ quantity }} товар</b></h1>
+                {% elif quantity >= 5 %}
+                    <h1 class="font-weight-bold"><b>Знайдено: {{ quantity }} товарів</b></h1>
+                {% else %}
+                    <h1 class="font-weight-bold"><b>Нічого не знайдено:(</b></h1>
+                {% endif %}
             </div>
         </div>
     </div>
