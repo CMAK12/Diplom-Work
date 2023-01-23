@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block title %} Дякую за покупку {% endblock %}
+
+{% block content %}
+
+<div style="text-align: center;" class="product_title">
+    Дякую за покупку
+    <div class="product_desc">
+        Натисніть <a href="{% url 'home' %}">сюди</a>, щоб повернутися на головну сторінку
+    </div>
+</div>
+
+{% endblock %}

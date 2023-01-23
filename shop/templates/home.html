@@ -17,12 +17,12 @@
 <div class="container">
     <div class="row">
         {% for product in products %}
-        <div class="product-item">
+        <div class="product-item" style="margin-bottom: 15px;">
             <a href="{{ product.get_url }}"><img src="{{ product.image.url }}" style="height: 351px;"></a>
             <div class="product-list">
               <h3>{{ product.name_limit }}</h3>
                 <span class="price">₴{{ product.price }}</span>
-                <a href="" class="button">В корзину</a>
+                <a href="{% url 'add_cart' product.id %}" class="button">В корзину</a>
             </div>
           </div>
 		{% endfor %}
