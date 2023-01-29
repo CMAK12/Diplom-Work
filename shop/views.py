@@ -1,8 +1,7 @@
-from django.shortcuts import render, get_object_or_404, redirect, HttpResponseRedirect
-from .models import Product, Category, Cart, CartItem
+from django.shortcuts import render, get_object_or_404, redirect
+from .models import Product, Category, Cart, CartItem, Wishlist, WishlistItem
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.mail import send_mail
-from django.conf import settings
 from .forms import SendMailToUser
 
 def home(request, category_slug=None):
@@ -60,7 +59,6 @@ def _cart_id(request):
 		cart = request.session.create()
 	return cart
 
-
 def add_cart(request, product_id):
 	product = Product.objects.get(id=product_id)
 	try:
@@ -74,7 +72,7 @@ def add_cart(request, product_id):
 			cart_item.quantity += 1
 		cart_item.save()
 	except CartItem.DoesNotExist:
-		cart_item = CartItem.objects.create(product=product, quantity=1, cart = cart)
+		cart_item = CartItem.objects.create(product=product, quantity=1, cart=cart)
 		cart_item.save()
 	return redirect('cart_detail')
 
@@ -114,17 +112,52 @@ def buying(request):
 			firstname = form.cleaned_data['firstname']
 			lastname = form.cleaned_data['lastname']
 			email = form.cleaned_data['email']
+			cart_item = CartItem.objects.all()
 
 			send_mail(
-				'Subject here',
-				f'Thanks for purchase, {firstname} {lastname}', 
+				'Purchase complete!',
+				f'Дякую за покупку, {firstname} {lastname}', 
 				'phoneshop@samsa.com',
 				[email]
 				)
-			cart_item = CartItem.objects.all()
+
 			cart_item.delete()
+
 			return redirect('buyed')
 	return render(request, 'buy.html', {'form':form})
-	
+
 def buyed(request):
 	return render(request, 'buyed.html')
+
+def wishlist_add(request, product_id):
+	product = Product.objects.get(id=product_id)
+	try:
+		wishlist = Wishlist.objects.get(wishlist_id=_cart_id(request))
+	except Wishlist.DoesNotExist:
+		wishlist = Wishlist.objects.create(wishlist_id=_cart_id(request))
+		wishlist.save()
+	try:
+		wishlist_item = WishlistItem.objects.get(product=product, wishlist=wishlist)
+		wishlist_item.save()
+	except WishlistItem.DoesNotExist:
+		wishlist_item = WishlistItem.objects.create(product=product, quantity=1, wishlist=wishlist)
+		wishlist_item.save()
+	return redirect('wishlist')
+
+def wishlist_delete(request, product_id):
+	wishlist = Wishlist.objects.get(wishlist_id=_cart_id(request))
+	product = get_object_or_404(Product, id=product_id)
+	wishlist_item = WishlistItem.objects.get(product=product, wishlist=wishlist)
+	wishlist_item.delete()
+	return redirect('wishlist')
+
+def wishlist(request, total=0, counter=0, wishlist_items=None):
+	try:
+		wishlist = Wishlist.objects.get(wishlist_id=_cart_id(request))
+		wishlist_items = WishlistItem.objects.filter(wishlist=wishlist, active=True)
+		for wishlist_item in wishlist_items:
+			total += (wishlist_item.product.price * wishlist_item.quantity)
+			counter += (wishlist_item.product.price * wishlist_item.quantity)
+	except ObjectDoesNotExist:
+		pass
+	return render(request, 'wishlist.html', dict(wishlist_items=wishlist_items, total=total, counter=counter))

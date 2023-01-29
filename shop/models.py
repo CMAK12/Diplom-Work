@@ -1,5 +1,6 @@
 from django.db import models
 from django.urls import reverse
+from django.conf import settings
 
 # Create your models here.
 
@@ -70,3 +71,27 @@ class CartItem(models.Model):
 
 	def __str__(self):
 		return self.product
+
+class Wishlist(models.Model):
+    wishlist_id = models.CharField(max_length=250, blank=True)
+    date_added = models.DateField(auto_now_add=True)
+    
+    class Meta:
+        ordering = ['date_added']
+        db_table = 'Wishlsit'
+
+
+    def __str__(self):
+        return self.wishlist_id
+
+class WishlistItem(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    wishlist = models.ForeignKey(Wishlist, on_delete= models.CASCADE)
+    quantity = models.IntegerField()
+    active = models.BooleanField(default=True)
+
+    class Meta:
+        db_table = 'WishlistItem'
+
+    def __str__(self):
+        return self.product

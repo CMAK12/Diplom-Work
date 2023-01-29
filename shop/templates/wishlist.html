@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+
+{% block title %} Список Бажань {% endblock %}
+
+{% block content %}
+
+    {% if not wishlist_items %}
+        <div class="text-center">
+            <br>
+            <h1 class="text-center product_title">
+                У вашому списку бажань нічого немає
+            </h1>
+            <br>
+            <p class="text-center">
+                Натисніть <a href="{% url 'home' %}">сюди</a>, щоб повернутися на головну сторінку
+            </p>
+        </div>
+    {% else %}
+        <div class="text-center">
+            <br>
+            <div class="text-center product_title">
+                Список бажань
+            </div>
+        </div>
+        <div class="">
+            <div>
+                <table class="table cart-table">
+                    <thead class="cart-thead">
+                        <tr>
+                            <th colspan="4" class="text-center">
+                                Товари
+                            </th>
+                        </tr>
+                    </thead>
+                    {% for wishlist_item in wishlist_items %}
+                    <tr>
+                        <td>
+                            <a href="{{ wishlist_item.product.get_url }}">
+                                <img src="{{ wishlist_item.product.image.url }}" width="100" height="100">
+                            </a>
+                        </td>
+                        <td class="text-left">
+                            {{ wishlist_item.product.name }}
+                            <br>
+                            SKU: {{ wishlist_item.product.id }}
+                            <br>
+                            Unit Price: ₴{{ wishlist_item.product.price }}
+                        </td>
+                        <td>
+                            <a href="{% url 'wishlist_delete' wishlist_item.product_id %}" style="margin-top: 50px;">
+                                <button type="button" class="btn btn-success" style="margin-top: 70px;">
+                                    Видалити
+                                </button>
+                            </a>
+                        </td>
+                        <td>
+                            <a href="{% url 'add_cart' wishlist_item.product_id %}">
+                                <button type="button" class="btn btn-success" style="margin-top: 70px;">
+                                    Додати до кошику
+                                </button>
+                            </a>
+                        </td>        
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        {% endif %}
+
+{% endblock %}

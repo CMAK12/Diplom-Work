@@ -5,5 +5,4 @@ class SendMailToUser(forms.Form):
     lastname = forms.CharField(max_length=60)
     email = forms.EmailField(help_text='youremail@example.com')
     city = forms.CharField(max_length=25)
-    delivery = forms.ChoiceField(choices=((1, "Нова Пошта"), (2, "Укр Пошта")))
-
+    delivery = forms.ChoiceField(choices=(('НП', "Нова Пошта"), ('УП', "Укр Пошта")))
