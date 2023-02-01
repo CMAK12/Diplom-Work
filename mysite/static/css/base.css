@@ -16,3 +16,12 @@
 	text-align: center;
 	margin: 0 auto;
 }
+
+.errorlist li {
+	color:red;
+	font-weight: bold;
+}
+
+.custom_div {
+	margin-bottom: 20px !important;
+}

@@ -1,18 +1,30 @@
 {% extends 'base.html' %}
 
+{% load crispy_forms_tags %}
+
 {% block title %} Buying {% endblock %}
 
 {% block content %}
-<div class="text-center">
-    <h1>Оформлення замовлення</h1>
-    <br>
-            <form method="post" action=".">
-                {% csrf_token %}
+{% if not form.is_valid %}
+    <div class="text-center">
+        <h1 class="product_title">
+            Оформлення замовлення
+        </h1>
+        <br>
+                <form method="post" action=".">
+                    {% csrf_token %}
 
-                {{ form.as_p }}
+                    {{ form | crispy }}
 
-                <button type="submit">Submit</button>
-            </form>
+                    <button type="submit" class="btn btn-succes">Submit</button>
+                </form>
+            </div>
+{% else %}
+    <div style="text-align: center;" class="product_title">
+        Дякую за покупку
+        <div class="product_desc">
+            Натисніть <a href="{% url 'home' %}">сюди</a>, щоб повернутися на головну сторінку
         </div>
-    
+    </div>
+{% endif %}
 {% endblock %}

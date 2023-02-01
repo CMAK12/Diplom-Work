@@ -2,26 +2,18 @@ from django.shortcuts import render, get_object_or_404, redirect
 from .models import Product, Category, Cart, CartItem, Wishlist, WishlistItem
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.mail import send_mail
-from .forms import SendMailToUser
+from .forms import SendMailToUser, SignUp
+from django.contrib.auth.models import Group, User
+from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth import login, authenticate, logout
 
 def home(request, category_slug=None):
-	sort_by = request.GET.get('sort')
 	category_page = None
 	products = None
 	if category_slug != None:
 			category_page = get_object_or_404(Category, slug=category_slug)
-			if sort_by == 'expensive':
-				products = Product.objects.filter(category=category_page, available=True).order_by('-price')
-			elif sort_by == 'cheap':
-				products = Product.objects.filter(category=category_page, available=True).order_by('price')
-			else:
-				products = Product.objects.filter(category=category_page, available=True)
+			products = Product.objects.filter(category=category_page, available=True)
 	else:
-		if sort_by == 'expensive':
-			products = Product.objects.all().filter(available=True).order_by('-price')
-		elif sort_by == 'cheap':
-			products = Product.objects.all().filter(available=True).order_by('price')
-		else:
 			products = Product.objects.all().filter(available=True)
 	return render(request, 'home.html', {'category':category_page, 'products': products})
 
@@ -123,11 +115,7 @@ def buying(request):
 
 			cart_item.delete()
 
-			return redirect('buyed')
 	return render(request, 'buy.html', {'form':form})
-
-def buyed(request):
-	return render(request, 'buyed.html')
 
 def wishlist_add(request, product_id):
 	product = Product.objects.get(id=product_id)
@@ -151,13 +139,44 @@ def wishlist_delete(request, product_id):
 	wishlist_item.delete()
 	return redirect('wishlist')
 
-def wishlist(request, total=0, counter=0, wishlist_items=None):
+def wishlist(request, wishlist_items=None):
 	try:
 		wishlist = Wishlist.objects.get(wishlist_id=_cart_id(request))
 		wishlist_items = WishlistItem.objects.filter(wishlist=wishlist, active=True)
-		for wishlist_item in wishlist_items:
-			total += (wishlist_item.product.price * wishlist_item.quantity)
-			counter += (wishlist_item.product.price * wishlist_item.quantity)
 	except ObjectDoesNotExist:
 		pass
-	return render(request, 'wishlist.html', dict(wishlist_items=wishlist_items, total=total, counter=counter))
+	return render(request, 'wishlist.html', {'wishlist_items':wishlist_items})
+
+def signUpView(request):
+	if request.method == 'POST':
+		form = SignUp(request.POST)
+		if form.is_valid():
+			form.save()
+			username = form.cleaned_data.get('username')
+			signup_user = User.objects.get(username=username)
+			user_group = Group.objects.get(name='User')
+			user_group.user_set.add(signup_user)
+	else:
+		form = SignUp()
+	return render(request, 'signup.html', {'form': form})
+
+def loginView(request):
+	if request.method == 'POST':
+		form = AuthenticationForm(data=request.POST)
+		if form.is_valid():
+			username = request.POST['username']
+			password = request.POST['password']
+			user = authenticate(username=username, password=password)
+			if user is not None:
+				login(request, user)
+				return redirect('home')
+			else:
+				return redirect('signup')
+	else:
+		form = AuthenticationForm()
+	return render(request, 'login.html', {'form': form})
+
+def signoutView(request):
+	logout(request)
+	return redirect('login')
+

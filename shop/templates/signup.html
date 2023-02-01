@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% load crispy_forms_tags %}
+
+{% block title %} Реєстрація {% endblock %}
+
+{% block content %}
+
+    <div>
+        {% if not form.is_valid %}
+            <div>
+                <br>
+                <h1 class="product_title text-center">
+                    Створіть новий акаунт 
+                </h1>
+                <br>
+                <div class="col-9 col-sm-9 col-md-6 col-lg-5 mx-auto bg-light">
+                    <br>
+                    <p>Будь ласка введіть вашу інформацію, щоб створити новий акаунт</p>
+                    <form method="post">
+                        {% csrf_token %}
+                        <p>{{ form | crispy }}</p>
+                        <button type="submit" name="button" class="btn btn-success">
+                            Зареєструватися
+                        </button>
+                    </form>
+                </div>
+            </div>
+        {% else %}
+        <div class="mx-auto">
+            <br>
+            <h1 class="product_title text-center">
+                Ваш акаунт був успішно створений
+            </h1>
+            <br>
+            <div>
+                <h6 class="text-center">Ваш акаунт був створений і готовий до використання</p>
+                <br>
+                <a href="{% url 'home' %}" class="text-center">Продовжити покупки</a>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+{% endblock %}
