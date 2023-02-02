@@ -8,13 +8,24 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import login, authenticate, logout
 
 def home(request, category_slug=None):
+	sort_by = request.GET.get('sort')
 	category_page = None
 	products = None
 	if category_slug != None:
 			category_page = get_object_or_404(Category, slug=category_slug)
-			products = Product.objects.filter(category=category_page, available=True)
+			if sort_by == 'expensive':
+				products = Product.objects.filter(category=category_page, available=True).order_by('-price')
+			elif sort_by == 'cheap':
+				products = Product.objects.filter(category=category_page, available=True).order_by('price')
+			else:
+				products = Product.objects.filter(category=category_page, available=True).order_by('name')
 	else:
-			products = Product.objects.all().filter(available=True)
+		if sort_by == 'expensive':
+			products = Product.objects.all().filter(available=True).order_by('-price')
+		elif sort_by == 'cheap':
+			products = Product.objects.all().filter(available=True).order_by('price')
+		else:
+			products = Product.objects.all().filter(available=True).order_by('name')
 	return render(request, 'home.html', {'category':category_page, 'products': products})
 
 def product(request, category_slug, product_slug):
@@ -26,22 +37,11 @@ def product(request, category_slug, product_slug):
 
 def search(request):
 	search_query = request.GET['search']
-	sort_by = request.GET.get('sort')
 
 	if search_query == None:
-		if sort_by == 'expensive':
-			searching = Product.objects.all().filter(available=True).order_by('price')
-		elif sort_by == 'cheap':
-			searching = Product.objects.all().filter(available=True).order_by('-price')
-		else:
-			searching = Product.objects.all().filter(available=True)
+		searching = Product.objects.all().filter(available=True)
 	else:
-		if sort_by == 'expensive':
-			searching = Product.objects.filter(name__contains=search_query, available=True).order_by('price')
-		elif sort_by == 'cheap':
-			searching = Product.objects.filter(name__contains=search_query, available=True).order_by('-price')
-		else:
-			searching = Product.objects.filter(name__contains=search_query, available=True)
+		searching = Product.objects.filter(name__contains=search_query, available=True)
 	quantity_of_goods = len(searching)
 	return render(request, 'search.html', {'searches':searching, 'quantity':quantity_of_goods})
 
@@ -97,7 +97,7 @@ def cart_detail(request, total=0, counter=0, cart_items=None):
 		pass
 	return render(request, 'cart.html', dict(cart_items=cart_items, total=total, counter=counter))
 
-def buying(request):
+def buying(request, cart_items=None):
 	form = SendMailToUser(request.POST)
 	if request.method == 'POST':
 		if form.is_valid():
@@ -105,10 +105,14 @@ def buying(request):
 			lastname = form.cleaned_data['lastname']
 			email = form.cleaned_data['email']
 			cart_item = CartItem.objects.all()
+			buy_items = []
+			for item in cart_item:
+				buy_items.append(item.product)
+				buy_items.append(f'quantity: {item.quantity}')
 
 			send_mail(
 				'Purchase complete!',
-				f'Дякую за покупку, {firstname} {lastname}', 
+				f'Дякую за покупку, {firstname} {lastname}, ви замовили: {buy_items}', 
 				'phoneshop@samsa.com',
 				[email]
 				)
@@ -147,7 +151,7 @@ def wishlist(request, wishlist_items=None):
 		pass
 	return render(request, 'wishlist.html', {'wishlist_items':wishlist_items})
 
-def signUpView(request):
+def signUp(request):
 	if request.method == 'POST':
 		form = SignUp(request.POST)
 		if form.is_valid():
@@ -160,7 +164,7 @@ def signUpView(request):
 		form = SignUp()
 	return render(request, 'signup.html', {'form': form})
 
-def loginView(request):
+def logIn(request):
 	if request.method == 'POST':
 		form = AuthenticationForm(data=request.POST)
 		if form.is_valid():
@@ -176,7 +180,7 @@ def loginView(request):
 		form = AuthenticationForm()
 	return render(request, 'login.html', {'form': form})
 
-def signoutView(request):
+def signOut(request):
 	logout(request)
 	return redirect('login')
 
